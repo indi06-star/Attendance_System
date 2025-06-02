@@ -35,3 +35,79 @@ export const signUpUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// User Login
+
+const loginUserCon = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        // Checking if the user exists
+        const user = await getUserByEmail(email);
+        if (!user) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Verify password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Generate token
+        const token = jwt.sign({ user_id: user.user_id }, process.env.JWT_SECRET, { expiresIn: '100d' });
+
+        res.json({
+            message: "Login successful",
+            token,
+            user: {
+                user_id: user.user_id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email
+            }
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+};
+const loginAdminCon = async (req, res) => {
+    try{
+        const {email, password} = req.body;
+
+        // Check if admin exists
+
+        const admin = await getAdminByEmail(email);
+        if (!admin) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Verify password
+        const isMatch = await bcrypt.compare(password, admin.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Generate token
+        const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET, { expiresIn: '100d' });
+
+        res.json({
+            message: "Login successful",
+            token,
+            admin: {
+                admin_id: admin.admin_id,
+                username: admin.username,
+                email: admin.email,
+                phone_number: admin.phone_number
+            }
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+    }
+
+// Exporting the functions
+
+export {loginUserCon, loginAdminCon}
