@@ -1,6 +1,5 @@
 import { pool } from "../config/config.js";
 import bcrypt from "bcrypt";
-
 //signup admin
 export const signUpUser = async (username, email, phone_number, password) => {
   try {
