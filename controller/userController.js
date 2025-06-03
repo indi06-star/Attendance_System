@@ -5,7 +5,7 @@ import { config } from "dotenv";
 import { getAdminByEmail } from "../model/userModel.js";
 config();
 
-export const signUpUser = async (req, res) => {
+export const signUpAdmin = async (req, res) => {
   try {
     const { username, email, phone_number, password } = req.body;
     if (!email.endsWith("@lifechoices.co.za")) {

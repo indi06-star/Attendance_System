@@ -8,6 +8,21 @@ config();
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
 console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "[HIDDEN]" : "NOT FOUND");
 
+const app =express()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Middleware to parse JSON
 app.use(cors());
 app.use(express.json());
@@ -18,7 +33,7 @@ app.get("/test-email", async (req, res) => {
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "your-test-email@example.com",
+      to: "indiphilemcengwa.29@gmail.com",
       subject: "Test Email from Node.js",
       text: "This is a test email using Nodemailer.",
     });
