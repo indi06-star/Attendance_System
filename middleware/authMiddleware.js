@@ -28,7 +28,7 @@ const authenticateToken = (req, res, next) => {
         }
 
         console.log("Decoded Token:", decoded);
-        req.user = decoded; // Ensure this includes { user_id, email }
+        req.user = decoded; // Ensure this includes { admin_id, email }
         next();
     });
 };

@@ -25,3 +25,12 @@ export const signUpUser = async (username, email, phone_number, password) => {
     throw error;
   }
 };
+
+// login admin 
+
+
+export const getAdminByEmail = async (email) => {
+    console.log("Checking for admin with email:", email);
+    const [rows] = await pool.query('SELECT * FROM admin WHERE email = ?', [email]);
+    return rows[0];  // Return first admin if exists
+};
