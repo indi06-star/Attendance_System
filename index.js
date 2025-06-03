@@ -14,7 +14,7 @@ app.get("/test-email", async (req, res) => {
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "your-other-email@example.com",
+      to: "indiphilemcengwa.29@gmail.com",
       subject: "Testing Email",
       text: "This is a test email from Node.js using Nodemailer.",
     });
