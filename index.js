@@ -5,6 +5,8 @@ import userRouter from './routes/userRouter.js';
 import { transporter } from './config/emailTransporter.js';
 
 config();
+console.log("EMAIL_USER:", process.env.EMAIL_USER);
+console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "[HIDDEN]" : "NOT FOUND");
 
 const app = express();
 app.use(cors());
