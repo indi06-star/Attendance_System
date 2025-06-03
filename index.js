@@ -2,21 +2,22 @@ import express from 'express';
 import cors from 'cors';
 import { config } from 'dotenv';
 import userRouter from './routes/userRouter.js';
+import { transporter } from './config/emailTransporter.js';
 
 config();
-const app = express();
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
-// test forgot password
+// Test email route
 app.get("/test-email", async (req, res) => {
   try {
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "indiphilemcengwa.29@gmail.com",
-      subject: "Testing Email",
-      text: "This is a test email from Node.js using Nodemailer.",
+      to: "your-test-email@example.com",
+      subject: "Test Email from Node.js",
+      text: "This is a test email using Nodemailer.",
     });
     res.send("✅ Email sent successfully!");
   } catch (err) {
@@ -25,8 +26,9 @@ app.get("/test-email", async (req, res) => {
   }
 });
 
-// Define routes
+// Routes
 app.use('/', userRouter);
+
 app.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');
 });
