@@ -2,7 +2,9 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { pool } from "../config/config.js";
 import { config } from "dotenv";
+import { getAdminByEmail } from "../model/userModel.js";
 config();
+
 export const signUpUser = async (req, res) => {
   try {
     const { username, email, phone_number, password } = req.body;
@@ -35,3 +37,44 @@ export const signUpUser = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+// Admin Login
+
+const loginAdmin = async (req, res) => {
+    try{
+        const {email, password} = req.body;
+
+         // Check if the admin account exists
+        const admin = await getAdminByEmail(email);
+        if (!admin) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Verify password
+        const isMatch = await bcrypt.compare(password, admin.password_hash);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid email or password" });
+        }
+
+        // Generate token
+        const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET, { expiresIn: '100d' });
+
+        res.json({
+            message: "Login successful",
+            token,
+            admin: {
+                id: admin.id,
+                username: admin.username,
+                email: admin.email,
+                phone_number: admin.phone_number
+            }
+        });
+    } catch (error) {
+        console.error("Login error:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+    }
+
+// Exporting the functions
+
+export {loginAdmin}
