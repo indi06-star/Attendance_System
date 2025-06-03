@@ -10,4 +10,6 @@ const pool = mysql2.createPool({
   password: process.env.PASSWORD,
   database: process.env.DATABASE
 });
+
+export const API_URL = "http://localhost:3000"
 export { pool };
