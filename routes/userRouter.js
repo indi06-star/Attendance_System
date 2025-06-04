@@ -1,5 +1,5 @@
 import express from 'express';
-import { signUpAdmin, loginAdmin} from '../controller/userController.js';
+import { signUpAdmin, loginAdmin, logoutAdmin} from '../controller/userController.js';
 import {authenticateToken,adminSignUpAuth } from '../middleware/authMiddleware.js';
 const router = express.Router();
 
@@ -8,5 +8,6 @@ router.post('/', adminSignUpAuth,signUpAdmin);
 
 // login routes
 router.post('/login', loginAdmin);
+router.post('/logout', logoutAdmin);
 router.get('/',authenticateToken)
 export default router;
