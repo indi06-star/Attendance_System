@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import userRouter from './routes/userRouter.js';
 import { transporter } from './config/emailTransporter.js';
+import forgotRouter from './routes/forgotRouter.js'
 
 config();
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
@@ -10,21 +11,11 @@ console.log("EMAIL_PASS:", process.env.EMAIL_PASS ? "[HIDDEN]" : "NOT FOUND");
 
 const app =express()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Middleware to parse JSON
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:8080", // your frontend URL
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -46,6 +37,7 @@ app.get("/test-email", async (req, res) => {
 
 // Routes
 app.use('/', userRouter);
+app.use('/', forgotRouter);
 
 app.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');
