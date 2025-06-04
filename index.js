@@ -34,10 +34,10 @@ app.get("/test-email", async (req, res) => {
     res.status(500).send("Email failed to send.");
   }
 });
-
 // Routes
 app.use('/', userRouter);
 app.use('/', forgotRouter);
+app.use('/api/users', userRouter);
 
 app.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');

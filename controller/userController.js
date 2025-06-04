@@ -8,26 +8,17 @@ config();
 export const signUpAdmin = async (req, res) => {
   try {
     const { username, email, phone_number, password } = req.body;
-    // Only allow emails ending with @lifechoices.co.za
-    if (!email.endsWith("@lifechoices.co.za")) {
-      return res.status(403).json({ message: "Only LifeChoices admin emails can sign up." });
-    }
-    // Check password strength
-    const isStrongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(password);
-    if (!isStrongPassword) {
-      return res.status(400).json({
-        message: "Password must be at least 8 characters long and include a capital letter, small letter, number, and special symbol."
-      });
-    }
-    // Hash the password
+
+    // Step 1: Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
-    // Insert the new admin into the database
+
+    // Step 2: Insert the admin into the database
     const query = `
       INSERT INTO admin (username, password_hash, email, phone_number)
       VALUES (?, ?, ?, ?)
     `;
     const [result] = await pool.query(query, [username, hashedPassword, email, phone_number]);
-    // Respond with the new admin's info
+    // Step 3: Send response
     res.status(201).json({
       message: "Admin signed up successfully",
       admin: {
