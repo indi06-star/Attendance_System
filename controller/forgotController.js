@@ -7,7 +7,7 @@ import {
   storeResetToken,
   findUserByToken,
   updatePassword,
-  getusers_db
+  getusers_db,
 } from "../model/forgotModel.js";
 import { API_URL } from "../config/config.js";
 
@@ -34,7 +34,7 @@ export const forgotPassword = async (req, res) => {
 
     await storeResetToken(email, token, expiresAt);
 
-    const resetURL = `${API_URL}/Html/reset-password.html?token=${token}`;
+    const resetURL = `${API_URL}/reset-password?token=${token}`;
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
@@ -59,7 +59,8 @@ export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;
   try {
     const user = await findUserByToken(token);
-    if (!user) return res.status(400).json({ message: "Invalid or expired token" });
+    if (!user)
+      return res.status(400).json({ message: "Invalid or expired token" });
 
     const hashedPassword = await bcryptjs.hash(newPassword, 10);
     await updatePassword(user.email, hashedPassword);
