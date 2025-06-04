@@ -4,9 +4,8 @@ import {authenticateToken} from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// delete code after signing up admin//
-router.post('/user', signUpAdmin);
-
+// admin should be able to signup another admin//
+router.post('/', signUpAdmin);
 // login routes
 router.post('/login', loginAdmin);
 router.get('/',authenticateToken)
