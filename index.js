@@ -3,6 +3,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import userRouter from './routes/userRouter.js';
 import { transporter } from './config/emailTransporter.js';
+import forgotRouter from './routes/forgotRouter.js'
 
 config();
 console.log("EMAIL_USER:", process.env.EMAIL_USER);
@@ -31,7 +32,7 @@ app.get("/test-email", async (req, res) => {
 });
 // Routes
 app.use('/api/users', userRouter);
-
+app.use('/',forgotRouter)
 app.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');
 });
