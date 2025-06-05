@@ -12,7 +12,7 @@ export const findUserByEmail = async (email) => {
 
 export const storeResetToken = async (email, token, expiresAt) => {
   const [result] = await pool.query(
-    "UPDATE admin SET reset_token = ?, reset_expires = ? WHERE email = ?",
+    "UPDATE admin SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
     [token, expiresAt, email]
   );
   if (result.affectedRows === 0) {
@@ -22,7 +22,7 @@ export const storeResetToken = async (email, token, expiresAt) => {
 
 export const findUserByToken = async (token) => {
   const [user] = await pool.query(
-    "SELECT * FROM admin WHERE reset_token = ? AND reset_expires > NOW()",
+    "SELECT * FROM admin WHERE reset_token = ? AND reset_token_expiry > NOW()",
     [token]
   );
   return user.length ? user[0] : null;
@@ -30,7 +30,7 @@ export const findUserByToken = async (token) => {
 
 export const updatePassword = async (email, hashedPassword) => {
   await pool.query(
-    "UPDATE admin SET password = ?, reset_token = NULL, reset_expires = NULL WHERE email = ?",
+    "UPDATE admin SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE email = ?",
     [hashedPassword, email]
   );
 };
