@@ -1,9 +1,8 @@
 import jwt from 'jsonwebtoken'; 
 import dotenv from 'dotenv';
 
+
 dotenv.config();
-
-
 //signup
 export const adminSignUpAuth = (req, res, next) => {
   const { mainAdminPassword, email, password } = req.body;
@@ -12,7 +11,7 @@ export const adminSignUpAuth = (req, res, next) => {
   if (mainAdminPassword !== process.env.MAIN_ADMIN_PASSWORD) {
     return res.status(401).json({ message: "Unauthorized: Invalid main admin password." });
   }
-
+  
   // LifeChoices domain check
   if (!email.endsWith("@lifechoices.co.za")) {
     return res.status(403).json({ message: "Only admin emails from @lifechoices.co.za are allowed." });
