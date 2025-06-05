@@ -1,7 +1,7 @@
  // Bring in Express to make a web server
 import express from 'express';
 // Get the functions to sign up, log in, and log out admins
-import { signUpAdmin, loginAdmin, logoutAdmin ,getAllAdmins,  getAdminByUsername,updateAdminByUsername,deleteAdminByUsername} from '../controller/userController.js'; 
+import { signUpAdmin, loginAdmin, logoutAdmin,getAllAdmins,  getAdminByUsername,updateAdminByUsername,deleteAdminByUsername } from '../controller/userController.js'; 
 // Get the checks (middleware) to protect routes
 import { authenticateToken, adminSignUpAuth } from '../middleware/authMiddleware.js'; 
 // Make a router to handle admin routes

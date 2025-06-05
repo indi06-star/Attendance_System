@@ -34,6 +34,88 @@ export const signUpAdmin = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+// Get all admins
+export const getAllAdmins = async (req, res) => {
+  try {
+    const [admins] = await pool.query("SELECT id, username, email, phone_number FROM admin");
+    res.status(200).json({ admins });
+  } catch (error) {
+    console.error("Error fetching admins:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+// Get a single admin by username
+export const getAdminByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const [admin] = await pool.query(
+      "SELECT id, username, email, phone_number FROM admin WHERE username = ?",
+      [username]
+    );
+
+    if (admin.length === 0) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    res.status(200).json({ admin: admin[0] });
+  } catch (error) {
+    console.error("Error fetching admin by username:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+export const updateAdminByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+    const { new_username, email, phone_number } = req.body;
+
+    // Get current admin details
+    const [existing] = await pool.query("SELECT * FROM admin WHERE username = ?", [username]);
+
+    if (existing.length === 0) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    const current = existing[0];
+
+    // Use current values if fields are not provided in body
+    const updatedUsername = new_username || current.username;
+    const updatedEmail = email || current.email;
+    const updatedPhone = phone_number || current.phone_number;
+
+    // Update the admin with new or existing values
+    const [result] = await pool.query(
+      `UPDATE admin SET username = ?, email = ?, phone_number = ? WHERE username = ?`,
+      [updatedUsername, updatedEmail, updatedPhone, username]
+    );
+
+    res.status(200).json({ message: "Admin updated successfully." });
+  } catch (error) {
+    console.error("Error updating admin:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+// Delete an admin by username
+export const deleteAdminByUsername = async (req, res) => {
+  try {
+    const { username } = req.params;
+
+    const [result] = await pool.query("DELETE FROM admin WHERE username = ?", [username]);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Admin not found." });
+    }
+
+    res.status(200).json({ message: "Admin deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting admin:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
 // Admin Login
 const loginAdmin = async (req, res) => {
     try{
