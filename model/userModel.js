@@ -1,85 +1,40 @@
-import { pool } from "../config/config.js";
-import bcrypt from "bcrypt";
+import { pool } from "../config/config.js"; // Get database connection info
+import bcrypt from "bcrypt"; // Library to make passwords safe (hashing)
 
-// Register a new admin
+// Sign up a new admin user
 export const signUpUser = async (username, email, phone_number, password) => {
   try {
+    // Make the password safe so no one can read it
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Ask the database to add this new admin
     const query = `
       INSERT INTO admin (username, password_hash, email, phone_number)
       VALUES (?, ?, ?, ?)
     `;
+
     const [result] = await pool.query(query, [username, hashedPassword, email, phone_number]);
 
+    // Give back the new admin info
     return {
-      admin_id: result.insertId,
+      admin_id: result.insertId, // The ID the database gave this admin
       username,
       email,
       phone_number,
-      user_role: "admin"
+      user_role: "admin" // This user is an admin
     };
   } catch (error) {
+    // If something goes wrong, throw the error
     throw error;
   }
 };
 
-// Get admin by email (for login)
+// Login: find admin by email
 export const getAdminByEmail = async (email) => {
-  const [rows] = await pool.query("SELECT * FROM admin WHERE email = ?", [email]);
-  return rows[0];
-};
+  console.log("Checking for admin with email:", email); // Just printing the email to see in logs
 
-// Get all admins
-export const getAllAdmins = async () => {
-  const [rows] = await pool.query("SELECT id, username, email, phone_number FROM admin");
-  return rows;
-};
+  // Look for admin in the database using the email
+  const [rows] = await pool.query('SELECT * FROM admin WHERE email = ?', [email]);
 
-// Get single admin by username
-export const getAdminByUsername = async (username) => {
-  const [rows] = await pool.query("SELECT id, username, email, phone_number FROM admin WHERE username = ?", [username]);
-  return rows[0];
-};
-
-// Update an admin by username
-export const updateAdminByUsername = async (username, updates) => {
-  const { email, phone_number, password } = updates;
-  let query = "UPDATE admin SET ";
-  const params = [];
-
-  if (email) {
-    query += "email = ?, ";
-    params.push(email);
-  }
-
-  if (phone_number) {
-    query += "phone_number = ?, ";
-    params.push(phone_number);
-  }
-
-  if (password) {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    query += "password_hash = ?, ";
-    params.push(hashedPassword);
-  }
-
-  if (params.length === 0) {
-    throw new Error("No fields provided for update.");
-  }
-
-  // Remove last comma and space
-  query = query.slice(0, -2);
-
-  query += " WHERE username = ?";
-  params.push(username);
-
-  const [result] = await pool.query(query, params);
-  return result;
-};
-
-// Delete an admin by username
-export const deleteAdminByUsername = async (username) => {
-  const [result] = await pool.query("DELETE FROM admin WHERE username = ?", [username]);
-  return result;
+  return rows[0]; // If found, give back the first admin found
 };
