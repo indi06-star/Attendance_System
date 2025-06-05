@@ -65,5 +65,11 @@ const loginAdmin = async (req, res) => {
         res.status(500).json({ message: "Server error", error });
     }
     }
+
+
+    export const logoutAdmin = (req, res) => {
+  console.log("Logout endpoint hit. Client should now discard their token.");
+    res.status(200).json({ message: "Logout successful. Please discard your token on the client-side." });
+};
 // Exporting the functions
 export {loginAdmin}

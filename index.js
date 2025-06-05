@@ -38,7 +38,7 @@ app.get("/test-email", async (req, res) => {
 app.use('/', userRouter);
 app.use('/', forgotRouter);
 app.use('/api/users', userRouter);
-
+app.use('/',forgotRouter)
 app.listen(3000, () => {
   console.log('Server is running at http://localhost:3000');
 });
